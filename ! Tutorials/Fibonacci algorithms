@@ -1,0 +1,279 @@
+# Fibonacci algorithms
+# from 'Doing Math with Python'
+
+# Simplest method; no iteration
+
+def fibo(n):
+    if n == 1:
+        return [1]
+    if n == 2:
+        return [1, 1]
+    # n > 2
+    a = 1
+    b = 1
+
+    # First two members of the series
+    series = [a, b]
+    for i in range(n):
+        c = a + b
+        series.append(c)
+        a = b
+        b = c
+        print(series )
+
+n = int(input("Get a number:> "))
+
+fibo(n)
+
+# error for 1, 2; returns too many values for 3 + ()
+
+
+
+
+###############################################
+
+# from https://www.geeksforgeeks.org/program-for-nth-fibonacci-number/
+
+The sequence Fn of Fibonacci numbers is defined by the recurrence relation
+
+    Fn = Fn-1 + Fn-2
+
+with seed values
+
+   F0 = 0 and F1 = 1.
+
+TODO: Find memorization approach.   
+
+##############################################
+
+Method 1 ( Use recursion ) A simple method that is a direct recursive implementation mathematical recurrence relation given above.
+
+# Function for nth Fibonacci number 
+
+def Fibonacci(n): 
+	if n<0: 
+		print("Incorrect input") 
+	# First Fibonacci number is 0 
+	elif n==0: 
+		return 0
+	# Second Fibonacci number is 1 
+	elif n==1: 
+		return 1
+	else: 
+		return Fibonacci(n-1)+Fibonacci(n-2) 
+
+# Driver Program 
+
+print(Fibonacci(9)) 
+
+#This code is contributed by Saket Modi 
+
+Time Complexity: T(n) = T(n-1) + T(n-2) which is exponential.  
+
+##############################################
+
+Method 2 ( Use Dynamic Programming )
+We can avoid the repeated work done is the method 1 by storing the Fibonacci numbers calculated so far.
+
+
+# Fibonacci Series using Dynamic Programming 
+def fibonacci(n): 
+	
+	# Taking 1st two fibonacci nubers as 0 and 1 
+	FibArray = [0, 1] 
+	
+	while len(FibArray) < n + 1: 
+		FibArray.append(0) 
+	
+	if n <= 1: 
+		return n 
+	else: 
+		if FibArray[n - 1] == 0: 
+			FibArray[n - 1] = fibonacci(n - 1) 
+
+		if FibArray[n - 2] == 0: 
+			FibArray[n - 2] = fibonacci(n - 2) 
+			
+	FibArray[n] = FibArray[n - 2] + FibArray[n - 1] 
+	return FibArray[n] 
+	
+print(fibonacci(9)) 
+
+
+
+##############################################
+
+Method 3 ( Space Optimized Method 2 )
+We can optimize the space used in method 2 by storing the previous two numbers only because that is all we need to get the next Fibonacci number in series.
+
+# Function for nth fibonacci number - Space Optimisataion 
+# Taking 1st two fibonacci numbers as 0 and 1 
+
+def fibonacci(n): 
+	a = 0
+	b = 1
+	if n < 0: 
+		print("Incorrect input") 
+	elif n == 0: 
+		return a 
+	elif n == 1: 
+		return b 
+	else: 
+		for i in range(2,n+1): 
+			c = a + b 
+			a = b 
+			b = c 
+		return b 
+
+# Driver Program 
+
+print(fibonacci(9)) 
+
+#This code is contributed by Saket Modi 
+Time Complexity:O(n)
+Extra Space: O(1)
+
+
+##############################################
+Method 4 ( Using power of the matrix {{1,1},{1,0}} )
+This another O(n) which relies on the fact that if we n times multiply the matrix M = {{1,1},{1,0}} to itself (in other words calculate power(M, n )), then we get the (n+1)th Fibonacci number as the element at row and column (0, 0) in the resultant matrix.
+
+ # Helper function that multiplies 
+# 2 matrices F and M of size 2*2, 
+# and puts the multiplication 
+# result back to F[][] 
+
+# Helper function that calculates 
+# F[][] raise to the power n and 
+# puts the result in F[][] 
+# Note that this function is 
+# designed only for fib() and 
+# won't work as general 
+# power function 
+def fib(n): 
+	F = [[1, 1], 
+		[1, 0]] 
+	if (n == 0): 
+		return 0
+	power(F, n - 1) 
+	
+	return F[0][0] 
+
+def multiply(F, M): 
+
+	x = (F[0][0] * M[0][0] +
+		F[0][1] * M[1][0]) 
+	y = (F[0][0] * M[0][1] +
+		F[0][1] * M[1][1]) 
+	z = (F[1][0] * M[0][0] +
+		F[1][1] * M[1][0]) 
+	w = (F[1][0] * M[0][1] +
+		F[1][1] * M[1][1]) 
+	
+	F[0][0] = x 
+	F[0][1] = y 
+	F[1][0] = z 
+	F[1][1] = w 
+
+def power(F, n): 
+
+	M = [[1, 1], 
+		[1, 0]] 
+
+	# n - 1 times multiply the 
+	# matrix to {{1,0},{0,1}} 
+	for i in range(2, n + 1): 
+		multiply(F, M) 
+
+# Driver Code 
+if __name__ == "__main__": 
+	n = 9
+	print(fib(n)) 
+
+# This code is contributed 
+# by ChitraNayal 
+
+
+Time Complexity: O(n)
+Extra Space: O(1)
+
+
+
+
+
+
+##############################################
+
+Method 5 ( Optimized Method 4 )
+The method 4 can be optimized to work in O(Logn) time complexity. We can do recursive multiplication to get power(M, n) in the prevous method (Similar to the optimization done in this post)
+
+# Fibonacci Series using 
+# Optimized Method 
+
+# function that returns nth 
+# Fibonacci number 
+def fib(n): 
+	
+	F = [[1, 1], 
+		[1, 0]] 
+	if (n == 0): 
+		return 0
+	power(F, n - 1) 
+		
+	return F[0][0] 
+	
+def multiply(F, M): 
+	
+	x = (F[0][0] * M[0][0] +
+		F[0][1] * M[1][0]) 
+	y = (F[0][0] * M[0][1] +
+		F[0][1] * M[1][1]) 
+	z = (F[1][0] * M[0][0] +
+		F[1][1] * M[1][0]) 
+	w = (F[1][0] * M[0][1] +
+		F[1][1] * M[1][1]) 
+	
+	F[0][0] = x 
+	F[0][1] = y 
+	F[1][0] = z 
+	F[1][1] = w 
+		
+# Optimized version of 
+# power() in method 4 
+def power(F, n): 
+
+	if( n == 0 or n == 1): 
+		return; 
+	M = [[1, 1], 
+		[1, 0]]; 
+		
+	power(F, n // 2) 
+	multiply(F, F) 
+		
+	if (n % 2 != 0): 
+		multiply(F, M) 
+	
+# Driver Code 
+if __name__ == "__main__": 
+	n = 9
+	print(fib(n)) 
+
+# This code is contributed 
+# by ChitraNayal 
+
+Time Complexity: O(Logn)
+Extra Space: O(Logn) if we consider the function call stack size, otherwise O(1).
+
+##############################################
+
+Method 7
+Another approach:(Using formula)
+In this method we directly implement the formula for nth term in the fibonacci series.
+Fn = {[(√5 + 1)/2] ^ n} / √5
+Reference: http://www.maths.surrey.ac.uk/hosted-sites/R.Knott/Fibonacci/fibFormula.html
+
+(not available in python)
+
+
+
+##############################################
